@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fly Away</title>
+</head>
+<style>
+
+</style>
+<body>
+<h1>Swat the Fly!</h1>
+<div>
+<canvas id="canvas"></canvas>  
+</div>
+
+<script>
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    canvas.width = 0.9*document.documentElement.clientWidth;
+    canvas.height = 0.7*document.documentElement.clientHeight;
+    context.fillStroke = 'gray';
+    context.strokeRect(0,0,canvas.width, canvas.height);
+
+    var flyLocation = [300,300]; //start point for fly
+    var stepDistance = 20; //distance fly travels at a time
+
+    function normalFlying(flyLocation, flyLocationNext, drawFly){
+        var x1 = flyLocation[0], y1 = flyLocation[1];
+        var x2 = flyLocationNext[0], y2 = flyLocationNext[1];
+        //find number of equal length steps between points
+        steps = ((x2 - x1)**2 + (y2-y1)**2)**(1/2) / stepDistance;
+        var segmentX = (x2 - x1)/steps;
+        var segmentY = (y2 - y1)/steps;
+        //var angle = Math.PI/(2*steps);
+        for(var i = 0; i < steps; i++){
+            var [x_i, y_i] = [x1 + segmentX * i, y1 + segmentY * i]; // + cos(angle)
+            // // why doesn't this work?
+            setTimeout(drawFly, 100000, x_i, y_i);
+            drawFly(x_i, y_i);
+        }
+        return;
+    }
+
+    function drawFly(x, y){
+        context.fillStyle = 'white';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        //context.stroke()
+        // // relative motion without the begin path? 
+        context.beginPath();
+        // context.fillStyle = 'gray';
+        // context.fillRect(x,y, 10,10);
+        context.arc(x, y, 10, 0, 2*Math.PI);
+        context.stroke();
+    }
+
+    function newDestination(){
+        var x = Math.round(Math.random()*canvas.width);
+        var y = Math.round(Math.random()*canvas.height);
+        //console.log('new destination: '+x+" "+y);
+        return [x,y];
+
+    }
+
+    animateCallback();
+
+    function animateCallback(){
+        var flyLocationNext = newDestination();
+        normalFlying(flyLocation, flyLocationNext, drawFly);
+    //!!! I keep making this mistake!   flyLocation = flyLocationNext;
+        flyLocation = flyLocationNext.slice();
+        window.requestAnimationFrame(animateCallback);
+    }
+    // move fly along path
+    // draw fly
+    // if mouseover is within radius of fly position, 
+    // speed based on proximity, direction based on orientation
+    // 
+
+</script>
+</body>
+</html>
