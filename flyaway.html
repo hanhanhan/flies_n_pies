@@ -17,39 +17,47 @@
     var context = canvas.getContext('2d');
     canvas.width = 0.9*document.documentElement.clientWidth;
     canvas.height = 0.7*document.documentElement.clientHeight;
-    context.fillStroke = 'gray';
-    context.strokeRect(0,0,canvas.width, canvas.height);
+    context.fillStyle = 'gray';
 
     var flyLocation = [300,300]; //start point for fly
-    var stepDistance = 20; //distance fly travels at a time
+    var stepDistance = 5; //distance fly travels at a time
+    var flightpath = [];
 
-    function normalFlying(flyLocation, flyLocationNext, drawFly){
+    var startTime = Date.now();
+    var drawTime;
+    var elapsed;
+
+    function normalFlying(flyLocation, flyLocationNext){
         var x1 = flyLocation[0], y1 = flyLocation[1];
         var x2 = flyLocationNext[0], y2 = flyLocationNext[1];
         //find number of equal length steps between points
-        steps = ((x2 - x1)**2 + (y2-y1)**2)**(1/2) / stepDistance;
+        var steps = (((x2 - x1)**2 + (y2-y1)**2)**(1/2)) / stepDistance;
         var segmentX = (x2 - x1)/steps;
         var segmentY = (y2 - y1)/steps;
         //var angle = Math.PI/(2*steps);
         for(var i = 0; i < steps; i++){
             var [x_i, y_i] = [x1 + segmentX * i, y1 + segmentY * i]; // + cos(angle)
-            // // why doesn't this work?
-            setTimeout(drawFly, 100000, x_i, y_i);
-            drawFly(x_i, y_i);
+            var xy_i = [x_i, y_i].map(Math.floor);
+            flightpath.push(xy_i);
         }
-        return;
+        return flightpath;
     }
 
     function drawFly(x, y){
         context.fillStyle = 'white';
         context.fillRect(0, 0, canvas.width, canvas.height);
+        // context.fillStroke = 'gray';
+        // context.strokeRect(0 ,0 ,canvas.width, canvas.height);
         //context.stroke()
         // // relative motion without the begin path? 
-        context.beginPath();
-        // context.fillStyle = 'gray';
+        context.beginPath();    
+        context.fillStyle = 'gray';
         // context.fillRect(x,y, 10,10);
         context.arc(x, y, 10, 0, 2*Math.PI);
+        context.closePath();
         context.stroke();
+        
+        console.log('flying at: ' + x + " " + y);
     }
 
     function newDestination(){
@@ -60,11 +68,31 @@
 
     }
 
-    animateCallback();
-
     function animateCallback(){
+
         var flyLocationNext = newDestination();
-        normalFlying(flyLocation, flyLocationNext, drawFly);
+        flightpath = normalFlying(flyLocation, flyLocationNext, drawFly);
+        
+        var drawTime = Date.now();
+
+        for(i = 0; i < flightpath.length; i++){
+            // //1. Not a solution but it draws
+            // drawFly(flightpath[i][0], flightpath[i][1]);
+
+            //2. super slow to start and jerky motion -- queing a bunch of drawing events?
+            console.log('before at ' + flightpath[i][0] + " " + flightpath[i][1]);
+            window.setTimeout(drawFly, 1000, flightpath[i][0], flightpath[i][1]);
+            console.log("after drawfly "+ i);
+
+
+            // var startTime = Date.now();
+
+            // var elapsed = startTime - drawTime;
+            // if(elapsed > 1000){
+            //     drawFly(flightpath[i][0], flightpath[i][1]);
+            //     var drawTime = Date.now();
+            // }else{ return;   }
+        }
     //!!! I keep making this mistake!   flyLocation = flyLocationNext;
         flyLocation = flyLocationNext.slice();
         window.requestAnimationFrame(animateCallback);
@@ -74,6 +102,8 @@
     // if mouseover is within radius of fly position, 
     // speed based on proximity, direction based on orientation
     // 
+
+    animateCallback();
 
 </script>
 </body>
