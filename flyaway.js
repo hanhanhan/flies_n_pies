@@ -64,11 +64,19 @@ function drawFly(){
     context.lineTo(
         (fly.x + swattingDist * Math.cos(chaseAngle)), 
         fly.y - swattingDist * Math.sin(chaseAngle));
+        context.moveTo(fly.x, fly.y);
+    context.closePath();
     context.stroke();
 
+    context.strokeStyle = 'orange';
+    context.beginPath();
+    context.moveTo(fly.x, fly.y);
+    context.lineTo(
+        (fly.x + swattingDist * Math.cos(chaseAngle + Math.PI/2)), 
+        fly.y - swattingDist * Math.sin(chaseAngle + Math.PI/2));
+    context.stroke();
 
-
-
+    //Fly changes direction if it hits a wall
     if(fly.x < padding && Math.cos(fly.angle) < 0){
         newAngle(-Math.PI/2);
     }else if(fly.x > w && Math.cos(fly.angle) > 0){
@@ -92,6 +100,7 @@ function drawFly(){
         buzzCounter = Math.floor(Math.random() * speed);
      }
 
+     //Sometimes the fly changes direction without hitting a wall.
     if(directionCounter < 0){
         fly.angle = Math.random() * Math.PI * 2;
         directionCounter = Math.floor(Math.random() * canvas.height / 2);
