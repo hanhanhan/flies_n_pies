@@ -11,7 +11,7 @@ let padding = 5;
 let w = canvas.width - padding;
 let h = canvas.height - padding;
 
-canvas.onmousemove = flyFromMouse;
+canvas.onmousemove = mouseCoords;
 
 context.fillStyle = 'gray';
 
@@ -37,10 +37,11 @@ let elapsed;
 let interval = 5;
 
 //Interactivity
-let swattingDist = canvas.width;//speed * 50;
+let swattingDist = speed * 30;
 let chaseAngle;
 let x_diff;
 let y_diff;
+let mouseX, mouseY;
 
 function drawFly(){
     context.strokeStyle = 'gray';
@@ -88,53 +89,61 @@ function drawFly(){
     } 
 
     fly.buzzAngle += buzzStep;
-    // fly.x += speed * Math.cos(fly.angle) + buzz * Math.sin(fly.buzzAngle);
-    // fly.y += speed * Math.sin(fly.angle) + buzz * Math.cos(fly.buzzAngle);
+    fly.x += speed * Math.cos(fly.angle) + buzz * Math.sin(fly.buzzAngle);
+    fly.y += speed * Math.sin(fly.angle) + buzz * Math.cos(fly.buzzAngle);
     buzzCounter--;
     directionCounter--;
 
-    //Randomize the buzz noise
-    if(buzzCounter < 0){
-        buzz = Math.random() * speed;
-        buzzStep = Math.random() * Math.PI/2;
-        buzzCounter = Math.floor(Math.random() * speed);
-     }
+    // //Randomize the buzz noise
+    // if(buzzCounter < 0){
+    //     buzz = Math.random() * speed;
+    //     buzzStep = Math.random() * Math.PI/2;
+    //     buzzCounter = Math.floor(Math.random() * speed);
+    //  }
 
-     //Sometimes the fly changes direction without hitting a wall.
-    if(directionCounter < 0){
-        fly.angle = Math.random() * Math.PI * 2;
-        directionCounter = Math.floor(Math.random() * canvas.height / 2);
+    //  //Sometimes the fly changes direction without hitting a wall.
+    // if(directionCounter < 0){
+    //     fly.angle = Math.random() * Math.PI * 2;
+    //     directionCounter = Math.floor(Math.random() * canvas.height / 2);
+    // }
+
+    let dist = ((fly.x - mouseX)**2 + (fly.y - mouseY)**2)**(1/2);
+    if(dist < swattingDist){ 
+        flyFromMouse();
+    }else{ 
+        fly.speed = speed; 
     }
 }
 
 //If the mouse gets within a 'swatting distance' of the fly, the fly accelerates and changes direction away from mouse
-function flyFromMouse(e){
-    let x = e.clientX - canvasPlacement.left;
-    let y = e.clientY - canvasPlacement.top;
-    let dist = ((fly.x - x)**2 + (fly.y - y)**2)**(1/2);
-    if(dist < swattingDist){
-        // fly.speed *= 1 + 100 / dist**2;
-        x_diff = x - fly.x;
-        y_diff = y - fly.y;
-        chaseAngle = Math.atan2((fly.y - y),(x - fly.x));
-        console.log("angle: "+Math.round(chaseAngle * 180/Math.PI));
-        console.log("x_diff: " + Math.round(x - fly.x) + " y_diff: " + Math.round(y - fly.y));
-        // //Flies tend to fly at a pi/2 angle from attack
-        // fly.angle = chaseAngle + Math.PI;
-        // buzz = 0;
-        // buzzAngle = 0;
-        //have reset to keep these from winding up?
-        //have a pause on the counters?
-        buzzCounter++;
-        directionCounter++;
-    }else{
-        fly.speed = speed;
-    }
+function mouseCoords(e){
+    mouseX = e.clientX - canvasPlacement.left;
+    mouseY = e.clientY - canvasPlacement.top;
+    
+}
+    
+function flyFromMouse(){
+    // fly.speed *= 1 + 100 / dist**2;
+    x_diff = mouseX - fly.x;
+    y_diff = mouseY - fly.y;
+    chaseAngle = Math.atan2((y_diff),(x_diff));
+    console.log("angle: "+Math.round(chaseAngle * 180/Math.PI));
+    // console.log("x_diff: " + Math.round(x - fly.x) + " y_diff: " + Math.round(y - fly.y));
+    //Flies tend to fly at a pi/2 angle from attack
+    fly.angle = chaseAngle + Math.PI/2;
+    fly.speed = speed + 10/(x_diff**2 + y_diff**2);
+    buzz = 0;
+    buzzAngle = 0;
+    //have reset to keep these from winding up?
+    //have a pause on the counters?
+    buzzCounter++;
+    directionCounter++;
 }
 
 //New angle in a range of pi radians, with lower limit of angleOffset argument 
 function newAngle(angleOffset){
     fly.angle = Math.random() * Math.PI + angleOffset;
+    console.log('newAngle');
 }
 
 function animateCallback(){
