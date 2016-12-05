@@ -16,7 +16,7 @@ context.fillStyle = 'gray';
 let xStart = 250;
 let yStart = 250;
 let angle = Math.random() * 2 * Math.PI;
-let speed = 10; 
+let speed = 15; 
 let size = 50;
 
 //Fly image drawing
