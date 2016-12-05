@@ -7,9 +7,6 @@ let context = canvas.getContext('2d');
 canvas.width = 0.9*document.documentElement.clientWidth;
 canvas.height = 0.8*document.documentElement.clientHeight;
 let canvasPlacement = canvas.getBoundingClientRect();
-let padding = 60;
-let w = canvas.width - padding;
-let h = canvas.height - padding;
 
 canvas.onmousemove = mouseCoords;
 
@@ -20,18 +17,22 @@ let xStart = 250;
 let yStart = 250;
 let angle = Math.random() * 2 * Math.PI;
 let speed = 10; 
-let size = 100;
+let size = 50;
 
 //Fly image drawing
 let flyImage = new Image();
 flyImage.src = 'fly-4.png'//'drosophilia6sprites-nobg.png';
 let spriteWidth = 100;//200; //amount to increment through sprite sheet
-let flyImageWidth = 400; //1200;
+let flyImageWidth = 200; //1200;
 //Source image info
 let sx = 0; // position in sprite sheet
 let sy = 0;
 let sWidth = 100;//200;
 let sHeight = 100;//260;
+//where to draw fly on canvas
+let padding = spriteWidth/2;
+let w = canvas.width - padding;
+let h = canvas.height - padding;
 
 //Destination
 let dx = xStart;
@@ -54,7 +55,7 @@ let elapsed;
 let interval = 30;
 
 //Interactivity
-let swattingDist = 150;
+let swattingDist = 200;
 let chaseAngle;
 let x_diff;
 let y_diff;
@@ -62,7 +63,6 @@ let mouseX, mouseY;
 let escapeRotation = 1;
 
 function drawFly(){
-    console.log(fly.angle);
     context.strokeStyle = 'gray';
     context.lineWidth = 3;
     context.fillStyle = 'white';
@@ -123,7 +123,8 @@ function drawFly(){
 
     //Sometimes the fly changes direction without hitting a wall or mouse interaction
     if(directionCounter < 0){
-        fly.turning = turnFly();
+        //fly.turning = turnFly();
+        fly.angle = 2 * Math.PI * Math.random();
         directionCounter = Math.floor(Math.random() * canvas.height / 2);
     }
     fly.angle = fly.turning.next().value || fly.angle;
@@ -141,21 +142,21 @@ function drawFly(){
     //Fly changes direction randomly if it hits a wall in range of pi away from wall
     if(fly.x < padding && Math.cos(fly.angle) < 0){
         fly.x = padding;
-        fly.angle = turnFly();
-        //newAngle(-Math.PI/2);
+        //fly.angle = turnFly();
+        newAngle(-Math.PI/2);
 
     }else if(fly.x > w && Math.cos(fly.angle) > 0){
         fly.x = w;
-        fly.angle = turnFly();
-        //newAngle(Math.PI/2);
+        //fly.angle = turnFly();
+        newAngle(Math.PI/2);
     }else if(fly.y < padding && Math.sin(fly.angle) < 0){
         fly.y = padding;
-        fly.angle = turnFly();
-        //newAngle(0);
+        //fly.angle = turnFly();
+        newAngle(0);
     }else if(fly.y > h && Math.sin(fly.angle) > 0){
         fly.x = h;
-        fly.angle = turnFly();
-        //newAngle(Math.PI);
+        //fly.angle = turnFly();
+        newAngle(Math.PI);
     } 
 }
 
@@ -178,10 +179,10 @@ function flyFromMouse(){
     fly.speed = 10*speed + 50/(x_diff**2 + y_diff**2);
 }
 
-// //New angle in a range of pi radians, with lower limit of angleOffset argument 
-// function newAngle(angleOffset){
-//     fly.angle = Math.random() * Math.PI + angleOffset;
-// }
+//New angle in a range of pi radians, with lower limit of angleOffset argument 
+function newAngle(angleOffset){
+    fly.angle = Math.random() * Math.PI + angleOffset;
+}
 
 //Turn fly in a series of steps
 function* turnFly(){
@@ -195,6 +196,7 @@ function* turnFly(){
         fly.angle += rotation * increment;
         yield fly.angle;
     }
+    //return false;
 }
 
 function animateCallback(){
