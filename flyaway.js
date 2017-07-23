@@ -57,15 +57,14 @@ function random(min, max){
 function Pie(x){
     this.x = x;
     this.y = -pieHeight;
-    this.rotation = 0;
+    this.angle = 0;
     this.flies = [];
 
     for(let i = 0; i < fliesPerPie; i++){
         let fly = new Fly({
             pie: this,
-            xStart: this.x + flyStartOffsetX * Math.random(),
-            yStart: this.y + flyStartOffsetY * Math.random(),
-            rotate: 0
+            xStart: this.x + pieWidth * Math.random(),
+            yStart: this.y + pieHeight * Math.random(),
         })
         this.flies.push(fly);
     }
@@ -78,7 +77,7 @@ Pie.prototype.move = function(){
         //this.y = -3 * pieHeight;
         this.y = -pieHeight;
     }
-    // add rotation
+    // add angle
 
     this.flies.forEach(function(fly){
         fly.move()
@@ -89,9 +88,9 @@ Pie.prototype.move = function(){
 
 
 Pie.prototype.draw = function(){
-    context.rotate(this.rotation)
+    context.rotate(this.angle)
     context.drawImage(pieImage, this.x, this.y)
-    context.rotate(-this.rotation)
+    context.rotate(-this.angle)
 
     this.flies.forEach(function(fly){
         fly.draw()
@@ -107,10 +106,9 @@ function Fly(opt){
     this.vy = 0;
     this.ax = 0;
     this.ay = 0;
-    this.angle = angle;
-    this.size = size;
-    this.buzzAngle = buzzAngle;
-    this.rotation = 0;
+    this.size = 0;
+    this.buzzAngle = 0;
+    this.angle = 0;
     // this.turning = turnFly();
 }
 
@@ -139,9 +137,9 @@ Fly.prototype.move = function(){
 // }
 
 Fly.prototype.draw = function(){
-    context.rotate(this.rotate)
+    // context.rotate(this.rotate)
     context.drawImage(flyImage, this.x, this.y)
-    context.rotate(-this.rotate)
+    // context.rotate(-this.rotate)
 
     // //Draw fly sprite
     // sx = sx % flyImageWidth;
