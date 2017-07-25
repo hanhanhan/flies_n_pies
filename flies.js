@@ -1,11 +1,30 @@
 let sx = 0; // position in sprite sheet
 let sy = 0;
-let sWidth = 100;//200;
-let sHeight = 100;//260;
+let sWidth = 100;
+let sHeight = 100;
 let kAcceleration = 3;
+// let flyRange = pieWidth * 1.5;
+let flyRange = 20
 
 let flyImage = new Image()
 flyImage.src = 'fly-4.png'
+let spriteWidth = 100
+let flyImageWidth = 200
+
+//Add buzzy noise to flight path
+let buzz = 10;
+let buzzAngle = 0;
+let buzzStep = Math.PI / 5;
+let buzzCounter = 100;
+let directionCounter = 300;
+
+//Interactivity
+let swattingDist = 200;
+let chaseAngle;
+let x_diff;
+let y_diff;
+let mouseX, mouseY;
+let escapeRotation = 1;
 
 function Fly(opt){
     this.pie = opt.pie;
@@ -32,12 +51,18 @@ Fly.prototype.move = function(){
 
     // fast random motion within radius of pie
     // attracted motion outside radius of pie
-    
-    this.ax = kAcceleration * random(-1,1)/(d + 1)
-    this.ay = kAcceleration * random(-1,1)/(d + 1)
 
-    this.vx = this.vx + this.vx / dx + this.ax //* 0.02 * Math.random(-0.02,0.02);
-    this.vy = this.vy + this.vy / dy + this.ay//* 0.02 * Math.random(-0.02,0.02);
+    if(this.y > canvas.height){
+        this.y = this.pie.y;
+    }
+
+    if(d > flyRange){
+        this.vx += 0.01 * dx
+        this.vy += 0.01 * dy
+    } 
+
+    this.vx = this.vx
+    this.vy = this.vy 
 }
 
 

@@ -32,6 +32,9 @@ let pieRows = Math.round(canvas.height / pieYSpacing);
 let pieColumns = Math.round(canvas.width / pieXSpacing);
 pieColumns = pieColumns < 1 ? 1 : pieColumns
 
+// pieRows = 1
+// pieColumns = 1
+
 let pieFallVel = 12;
 let pieMaxAngle = Math.PI / 5;
 let angleIncrement = pieMaxAngle / 30;
@@ -44,17 +47,9 @@ pieImage.onload = function(){
 }
 
 
-
-
 function random(min, max){
     return Math.random() * (max - min) + min 
 }
-
-
-
-
-
-
 
 
 for(let row = 0; row < pieRows; row++){
