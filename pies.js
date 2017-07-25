@@ -9,8 +9,8 @@ function Pie(x, y){
     for(let i = 0; i < fliesPerPie; i++){
         let fly = new Fly({
             pie: this,
-            xStart: this.x + pieWidth * Math.random(),
-            yStart: this.y + pieHeight * Math.random(),
+            xStart: this.x + random(-pieWidth/2, pieWidth/2),//this.x + pieWidth * Math.random(),
+            yStart: this.y + random(-pieWidth/2, pieWidth/2)//this.y + pieHeight * Math.random(),
         })
         this.flies.push(fly)
     }

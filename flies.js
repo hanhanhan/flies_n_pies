@@ -25,12 +25,16 @@ let y_diff;
 let mouseX, mouseY;
 let escapeRotation = 1;
 
+function random(min, max){
+    return Math.random() * (max - min) + min 
+}
+
 function Fly(opt){
     this.pie = opt.pie;
     this.x = opt.xStart;
     this.y = opt.yStart;
-    this.vx = 0;
-    this.vy = 0;
+    this.vx = random(-5, 5);
+    this.vy = random(-5, 5);
     this.ax = 0;
     this.ay = 0;
     this.angle = 0;
