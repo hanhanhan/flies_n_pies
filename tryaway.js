@@ -15,7 +15,7 @@ canvas.height = 0.8 * document.documentElement.clientHeight;
 //Animation speed
 let drawTime = Date.now();
 let elapsed;
-let interval = 30;
+let interval = 10;
 
 // Pie Settings
 let pieWidth = 140;
@@ -26,14 +26,11 @@ let pies = [];
 let fliesPerPie = 10;
 let flyStartRadius = pieWidth * 2;
 
-let pieXSpacing = pieWidth * 3;
+let pieXSpacing = pieWidth * 2.5;
 let pieYSpacing = pieHeight * 2;
 let pieRows = Math.round(canvas.height / pieYSpacing);
 let pieColumns = Math.round(canvas.width / pieXSpacing);
 pieColumns = pieColumns < 1 ? 1 : pieColumns
-
-// pieRows = 1
-// pieColumns = 1
 
 let pieFallVel = 12;
 let pieMaxAngle = Math.PI / 5;

@@ -1,5 +1,5 @@
 
-let flyRange = 20;
+let flyRange = 50;
 
 let flyImage = new Image();
 flyImage.src = 'fly-4.png';
@@ -9,11 +9,12 @@ let spriteHeight = 100;
 let dWidth = 40;
 let dHeight = 40;
 let flyImageWidth = 200;
+let maxAcceleration = 0.0051;
 
 //Add buzzy noise to flight path
-let buzz = 10;
+let buzz = 5;
 let buzzAngle = 0;
-let buzzStep = Math.PI / 5;
+let buzzStep = Math.PI / 1.5;
 let buzzCounter = 100;
 let directionCounter = 300;
 
@@ -26,7 +27,7 @@ let mouseX, mouseY;
 let escapeRotation = 1;
 
 function random(min, max){
-    return Math.random() * (max - min) + min 
+    return Math.random() * (max - min) + min; 
 }
 
 function Fly(opt){
@@ -35,18 +36,25 @@ function Fly(opt){
     this.y = opt.yStart;
     this.vx = random(-5, 5);
     this.vy = random(-5, 5);
-    this.ax = 0;
-    this.ay = 0;
+    this.offset = random(-10, 10);
+    this.ax = maxAcceleration * Math.random();
+    this.ay = maxAcceleration * Math.random();
     this.angle = 0;
-    this.buzzAngle = 0;
+    this.buzzAngle = random(-Math.PI, Math.PI);
     this.sprite = 0;
     // this.turning = turnFly();
 }
 
 Fly.prototype.move = function(){
     // random motion with pie as attractor, and shooing with mouse
-    this.x += this.vx;
-    this.y += this.vy;
+
+    // if(this.y > canvas.height && this.pie.y < canvas.height){
+    //     this.vy = 0;
+    // } 
+    if(this.y > canvas.height && this.pie.y < 0){
+        this.y = this.y - canvas.height;
+    }
+
 
     let dx = this.pie.x - this.x;
     let dy = this.pie.y - this.y;
@@ -55,19 +63,18 @@ Fly.prototype.move = function(){
     // fast random motion within radius of pie
     // attracted motion outside radius of pie
 
-    if(this.y > canvas.height){
-        this.y = this.pie.y;
-    }
+
 
     if(d > flyRange){
-        this.vx += 0.01 * dx;
-        this.vy += 0.01 * dy;
+        this.vx += this.ax * (dx) ;
+        this.vy += this.ax * (dy);
     } 
 
-    this.vx = this.vx;
-    this.vy = this.vy; 
-
     this.angle = Math.atan2(this.vy, this.vx);
+    this.buzzAngle = (this.buzzAngle + buzzStep) % (2 * Math.PI)
+
+    this.x += this.vx + buzz * Math.cos(this.buzzAngle);
+    this.y += this.vy + buzz * Math.sin(this.buzzAngle);
 }
 
 
