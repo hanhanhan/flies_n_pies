@@ -1,15 +1,14 @@
-let sx = 0; // position in sprite sheet
-let sy = 0;
-let sWidth = 100;
-let sHeight = 100;
-let kAcceleration = 3;
-// let flyRange = pieWidth * 1.5;
-let flyRange = 20
 
-let flyImage = new Image()
-flyImage.src = 'fly-4.png'
-let spriteWidth = 100
-let flyImageWidth = 200
+let flyRange = 20;
+
+let flyImage = new Image();
+flyImage.src = 'fly-4.png';
+let spriteCount = 4;
+let spriteWidth = 100;
+let spriteHeight = 100;
+let dWidth = 40;
+let dHeight = 40;
+let flyImageWidth = 200;
 
 //Add buzzy noise to flight path
 let buzz = 10;
@@ -36,7 +35,7 @@ function Fly(opt){
     this.ay = 0;
     this.angle = 0;
     this.buzzAngle = 0;
-    this.frame = 0;
+    this.sprite = 0;
     // this.turning = turnFly();
 }
 
@@ -45,9 +44,9 @@ Fly.prototype.move = function(){
     this.x += this.vx;
     this.y += this.vy;
 
-    let dx = this.pie.x - this.x
-    let dy = this.pie.y - this.y
-    let d = Math.sqrt(dx * dx + dy * dy)
+    let dx = this.pie.x - this.x;
+    let dy = this.pie.y - this.y;
+    let d = Math.sqrt(dx * dx + dy * dy);
 
     // fast random motion within radius of pie
     // attracted motion outside radius of pie
@@ -57,15 +56,33 @@ Fly.prototype.move = function(){
     }
 
     if(d > flyRange){
-        this.vx += 0.01 * dx
-        this.vy += 0.01 * dy
+        this.vx += 0.01 * dx;
+        this.vy += 0.01 * dy;
     } 
 
-    this.vx = this.vx
-    this.vy = this.vy 
+    this.vx = this.vx;
+    this.vy = this.vy; 
+
+    this.angle = Math.atan2(this.vy, this.vx);
 }
 
 
 Fly.prototype.draw = function(){
-    context.drawImage(flyImage, sx, sy, sWidth, sHeight, this.x, this.y, 40, 40);
+    // context.drawImage(flyImage, sx, sy, spriteWidth, spriteHeight, this.x, this.y, 40, 40);
+    this.sprite = this.sprite % spriteCount;
+    sx = this.sprite * spriteWidth;
+    this.sprite += 1;
+    
+    let x = this.x + spriteWidth/2;
+    let y = this.y + spriteHeight/2;
+    let angle = this.angle + Math.PI;
+
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
+    
+    context.drawImage(flyImage, sx, 0, spriteWidth, spriteHeight, 0, 0, dWidth, dHeight);
+    //context.translate(-x, -y)
+    // context.rotate(-angle)
+    context.restore();
 }
