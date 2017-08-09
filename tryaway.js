@@ -38,7 +38,7 @@ let angleIncrement = pieMaxAngle / 30;
 let pieRotateVel = 2;
 
 let pieImage = new Image();
-pieImage.src = 'cherrypie.png';
+pieImage.src = 'images/cherrypie.png';
 pieImage.onload = function(){
     animateCallback();
 }
